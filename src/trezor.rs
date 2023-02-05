@@ -50,6 +50,10 @@ impl<T: Transport + Sync + Send> HWI for Trezor<T> {
         self.kind
     }
 
+    async fn get_version(&self) -> Result<super::Version, HWIError> {
+        Err(HWIError::UnimplementedMethod)
+    }
+
     async fn is_connected(&self) -> Result<(), HWIError> {
         self.fingerprint().await?;
         Ok(())
@@ -106,6 +110,31 @@ impl TrezorSimulator {
         };
         s.is_connected().await?;
         Ok(s)
+    }
+}
+
+impl Trezor<UsbTransport> {
+    pub async fn try_connect_usb() -> Result<Self, HWIError> {
+        let s = Trezor {
+            transport: UsbTransport {},
+            kind: DeviceKind::Trezor,
+        };
+        s.is_connected().await?;
+        Ok(s)
+    }
+}
+
+#[derive(Debug)]
+pub struct UsbTransport;
+impl UsbTransport {
+    pub const TREZOR_VID: u16 = 0x1209;
+    pub const TREZOR_PID: u16 = 0x53C1;
+}
+
+#[async_trait]
+impl Transport for UsbTransport {
+    async fn request(&self, _req: &str) -> Result<String, TrezorError> {
+        return Ok(String::from(""));
     }
 }
 
