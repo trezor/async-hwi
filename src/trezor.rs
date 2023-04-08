@@ -19,7 +19,7 @@ pub struct Trezor<T: Transport> {
 impl<T: Transport> Trezor<T> {
     pub async fn fingerprint(&self) -> Result<Fingerprint, TrezorError> {
         const RES: &str = "00000000";
-        return Fingerprint::from_str(&RES).map_err(|e| TrezorError::Device(e.to_string()))
+        Fingerprint::from_str(&RES).map_err(|e| TrezorError::Device(e.to_string()))
     }
 
     pub async fn get_extended_pubkey(
@@ -27,7 +27,7 @@ impl<T: Transport> Trezor<T> {
         _path: &DerivationPath,
     ) -> Result<ExtendedPubKey, TrezorError> {
         const RES: &str = "";
-        return ExtendedPubKey::from_str(&RES).map_err(|e| TrezorError::Device(e.to_string()));
+        ExtendedPubKey::from_str(&RES).map_err(|e| TrezorError::Device(e.to_string()))
     }
 
     /// If the descriptor contains master public keys but doesn't contain wildcard derivations,
@@ -35,12 +35,12 @@ impl<T: Transport> Trezor<T> {
     /// If at least one of the xpubs has a wildcard derivation the descriptor will not be changed.
     /// /** is an equivalent of /{0,1}/*.
     pub async fn add_wallet(&self, _name: &str, _policy: &str) -> Result<(), TrezorError> {
-        return Ok(())
+        Ok(())
     }
 
     pub async fn sign(&self, _psbt: &Psbt) -> Result<Psbt, TrezorError> {
         const RES: &[u8] = "".as_bytes();
-        return encode::deserialize(&RES).map_err(|e| TrezorError::Device(e.to_string()));
+        encode::deserialize(&RES).map_err(|e| TrezorError::Device(e.to_string()))
     }
 }
 
